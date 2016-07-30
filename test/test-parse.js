@@ -28,7 +28,7 @@ const shop = [
 describe('Forum Parse', () =>
     describe('main', () =>
         it('should parse example correctly', done =>
-            fs.readFile('forum.post', 'utf-8', (err, data) => {
+            fs.readFile('test/res/forum.post', 'utf-8', (err, data) => {
                 should.not.exist(err);
                 should.exist(data);
 
