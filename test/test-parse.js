@@ -18,7 +18,8 @@ const shop = [
     ]},
     {"price":" ~b/o  9 chaos","items":[
         {"post":"11896626","index":"5","inline":"0"}
-    ]},{"price":" ~b/o  10 chaos","items":[
+    ]},
+    {"price":" ~b/o  10 chaos","items":[
         {"post":"11896626","index":"6","inline":"0"},
         {"post":"11896626","index":"7","inline":"0"},
         {"post":"11896626","index":"8","inline":"0"}
