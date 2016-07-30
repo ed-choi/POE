@@ -1,16 +1,26 @@
 require('pointfree-fantasy').expose(global);
 
+const fs = require('fs');
+
 const _ = require('lodash');
 const parse = require('bennu').parse;
 const text = require('bennu').text;
 
 // this syntax makes me sad
 const eagerConcat = compose(map(mconcat), parse.eager);
+const eagerMany = compose(parse.eager, parse.many);
+const eagerMany1 = compose(parse.eager, parse.many1);
 
 // consume p and resolve with (pure) x if it is successful
 const ensure = p => x => parse.next(p, parse.of(x));
 
 const spaces = parse.many1(text.space);
+
+const optSpaces = parse.many(text.space);
+
+const spaceSep = p => eagerMany1(
+    optSpaces.chain(__ => p).chain(ensure(optSpaces))
+);
 
 const stringValue = eagerConcat(parse.many1(
     text.noneOf('"')
@@ -48,9 +58,30 @@ const item = text.string('[item')
     )))
     .chain(ensure(text.character(']')));
 
+const items = spaceSep(item);
+
+const priceBlock = priceSpoiler
+    .chain(pr => items
+        .chain(its => endSpoiler
+        .chain(__ => parse.of({'price': pr, 'items': its})
+    )));
+
+const priceBlocks = spaceSep(priceBlock);
+
+const forumPost = outerSpoiler
+    .chain(__ => priceBlocks)
+    .chain(ensure(endSpoiler));
+
 const main = () => {
-    const res = parse.run(item, '[item post="1234" index="5" inline="432"]');
-    console.log(res);
+    fs.readFile('forum.post', 'utf-8', (err, data) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        const res = parse.run(forumPost, data);
+        console.log(JSON.stringify(res));
+    });
 };
 
 main();
