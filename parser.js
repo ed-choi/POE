@@ -18,22 +18,15 @@ const spaces = parse.many1(text.space);
 
 const optSpaces = parse.many(text.space);
 
-const spaceSep = p => eagerMany1(
-    optSpaces.chain(__ => p).chain(ensure(optSpaces))
-);
+const sepBy = (p, q) => parse.many(q)
+    .chain(__ => p)
+    .chain(ensure(parse.many(q)))
+
+const spaceSep = p => eagerMany1(sepBy(p, text.space));
 
 const stringValue = eagerConcat(parse.many1(
     text.noneOf('"')
 ));
-
-const outerSpoiler = text.string('[spoiler]');
-
-const endSpoiler = text.string('[/spoiler]');
-
-// [spoiler=" ~b/o 9 chaos"]
-const priceSpoiler = text.string('[spoiler="')
-    .chain(__ => stringValue)
-    .chain(ensure(text.string('"]')));
 
 // key="value"
 const keyValue = k => text.string(k)
@@ -60,6 +53,15 @@ const item = text.string('[item')
 
 const items = spaceSep(item);
 
+const outerSpoiler = text.string('[spoiler]');
+
+const endSpoiler = text.string('[/spoiler]');
+
+// [spoiler=" ~b/o 9 chaos"]
+const priceSpoiler = text.string('[spoiler="')
+    .chain(__ => stringValue)
+    .chain(ensure(text.string('"]')));
+
 const priceBlock = priceSpoiler
     .chain(pr => items
         .chain(its => endSpoiler
@@ -68,7 +70,7 @@ const priceBlock = priceSpoiler
 
 const priceBlocks = spaceSep(priceBlock);
 
-const forumPost = outerSpoiler
+const shop = outerSpoiler
     .chain(__ => priceBlocks)
     .chain(ensure(endSpoiler));
 
@@ -79,9 +81,9 @@ const main = () => {
             return;
         }
 
-        const res = parse.run(forumPost, data);
+        const res = parse.run(shop, data);
         console.log(JSON.stringify(res));
     });
 };
 
-main();
+exports.shop = shop;
