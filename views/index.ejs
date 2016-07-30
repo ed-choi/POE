@@ -1,0 +1,7 @@
+<% if (!user) { %>
+    <h2>Log in ya bittcccchhhh</h2>
+    <p><a href="auth/steam">Sign On with Steam</a></p>
+<% } else { %>
+    <h2>Ya did it <%= user.displayName %> ya suck a little less</h2>
+    <h><a href='logout'>Logout</a></h>
+<% } %>
