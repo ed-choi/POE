@@ -17,6 +17,11 @@
     "express": "^4.14.0",
     "lodash": "^4.14.0",
     "passport-steam": "^1.0.5",
+    "bennu": "^17.3.0",
+    "chai": "^3.5.0",
+    "lodash": "^4.14.0",
+    "mocha": "^2.5.3",
+    "pointfree-fantasy": "^0.1.3",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "webpack": "^1.13.1"
